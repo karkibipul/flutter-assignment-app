@@ -13,6 +13,7 @@ class LoginScreen extends StatelessWidget {
       backgroundColor: Colors.blue[50],
       body: Center(
         child: ElevatedButton.icon(
+          key: const Key('googleSignInButton'),
           icon: const Icon(Icons.login),
           label: const Text("Sign in with Google"),
           style: ElevatedButton.styleFrom(
