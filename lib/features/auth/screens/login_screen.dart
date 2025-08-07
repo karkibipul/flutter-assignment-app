@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_assignment_app/features/auth/services/auth_service.dart';
-import '../../weather/screens/weather_screen.dart';
+import '../../crud/screens/notes_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -25,7 +25,7 @@ class LoginScreen extends StatelessWidget {
             if (user != null && context.mounted) {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (_) => const WeatherScreen()),
+                MaterialPageRoute(builder: (_) => const NotesScreen()),
               );
             }
           },

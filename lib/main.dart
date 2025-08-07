@@ -116,12 +116,13 @@
 //   }
 // }
 
-// Firebase auth
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'features/auth/screens/login_screen.dart';
-import 'features/weather/weather_provider.dart';
+import 'features/crud/screens/notes_screen.dart';
+import 'features/auth/services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -130,31 +131,56 @@ void main() async {
       apiKey: "AIzaSyA99SDd_RWFgBp_3MbIDT32w2TyoAHEcn4",
       authDomain: "flutter-assignment-bipul.firebaseapp.com",
       projectId: "flutter-assignment-bipul",
-      storageBucket: "flutter-assignment-bipul.firebasestorage.app",
+      storageBucket: "flutter-assignment-bipul.appspot.com",
       messagingSenderId: "653741363027",
       appId: "1:653741363027:web:e0e11915027cbafa8c9ba6",
       measurementId: "G-L29CJ8JRNX",
     ),
   );
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => WeatherProvider()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Weather App',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const LoginScreen(),
+    return MultiProvider(
+      providers: [
+        Provider<AuthService>(create: (_) => AuthService()),
+      ],
+      child: MaterialApp(
+        title: 'Firestore CRUD App',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(primarySwatch: Colors.indigo),
+        home: const RootScreen(),
+      ),
     );
   }
 }
+
+class RootScreen extends StatelessWidget {
+  const RootScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context, listen: false);
+
+    return StreamBuilder(
+      stream: authService.authStateChanges,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        } else if (snapshot.hasData) {
+          return const NotesScreen(); // User is logged in
+        } else {
+          return const LoginScreen(); // Not logged in
+        }
+      },
+    );
+  }
+}
+

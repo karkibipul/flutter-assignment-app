@@ -5,6 +5,8 @@ import '../models/user_model.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  Stream<User?> get authStateChanges => _auth.authStateChanges();
+
   // Add your web client ID here (from Firebase Console)
   static const String _webClientId = '653741363027-iq15l2285diltb5gcprcul6142li21os.apps.googleusercontent.com';
 
