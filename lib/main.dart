@@ -91,7 +91,6 @@
 //   }
 // }
 
-
 // Task 2 Weather APP
 
 // import 'package:flutter/material.dart';
@@ -116,13 +115,13 @@
 //   }
 // }
 
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'features/auth/screens/login_screen.dart';
 import 'features/crud/screens/notes_screen.dart';
 import 'features/auth/services/auth_service.dart';
+import 'features/animations/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -138,7 +137,12 @@ void main() async {
     ),
   );
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -146,14 +150,34 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return MultiProvider(
-      providers: [
-        Provider<AuthService>(create: (_) => AuthService()),
-      ],
+      providers: [Provider<AuthService>(create: (_) => AuthService())],
       child: MaterialApp(
         title: 'Firestore CRUD App',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(primarySwatch: Colors.indigo),
+        themeMode: themeProvider.currentTheme,
+
+        theme: ThemeData(
+          brightness: Brightness.light,
+          scaffoldBackgroundColor: Colors.white,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.indigo,
+            foregroundColor: Colors.white,
+          ),
+          textTheme: const TextTheme(bodyLarge: TextStyle(color: Colors.black)),
+        ),
+
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          scaffoldBackgroundColor: Colors.black,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
+          ),
+          textTheme: const TextTheme(bodyLarge: TextStyle(color: Colors.white)),
+        ),
+
         home: const RootScreen(),
       ),
     );
@@ -183,4 +207,3 @@ class RootScreen extends StatelessWidget {
     );
   }
 }
-
